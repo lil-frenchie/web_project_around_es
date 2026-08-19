@@ -1,3 +1,5 @@
+import { enableValidation, setEventListeners, resetValidation } from "./validate.js";
+
 const initialCards = [
   {
     name: "Valle de Yosemite",
@@ -54,18 +56,41 @@ const imagePopupImage = imagePopup.querySelector(".popup__image");
 const imagePopupCaption = imagePopup.querySelector(".popup__caption");
 
 
-
 const cardsList = document.querySelector(".cards__list");
 const cardTemplate = document.querySelector("#card-template");
 
 
+function handleEscClose(evt) {
+  if (evt.key === "Escape") {
+    const openedPopup = document.querySelector(".popup_is-opened");
+    if (openedPopup) {
+      closeModal(openedPopup);
+    }
+  }
+}
+
 function openModal(popup) {
   popup.classList.add("popup_is-opened");
+  document.addEventListener("keydown", handleEscClose);
 }
 
 function closeModal(popup) {
   popup.classList.remove("popup_is-opened");
+  document.removeEventListener("keydown", handleEscClose);
 }
+
+
+const popupList = Array.from(document.querySelectorAll(".popup"));
+
+function handleOverlayClick(evt) {
+  if (evt.target === evt.currentTarget) {
+    closeModal(evt.currentTarget);
+  }
+}
+
+popupList.forEach((popup) => {
+  popup.addEventListener("click", handleOverlayClick);
+});
 
 
 function fillProfileForm() {
@@ -75,6 +100,7 @@ function fillProfileForm() {
 
 function handleOpenEditModal() {
   fillProfileForm();
+  resetValidation(editProfileForm);
   openModal(editPopup);
 }
 
@@ -152,10 +178,12 @@ function handleCardFormSubmit(evt) {
   renderCard(cardNameInput.value, cardLinkInput.value, cardsList);
 
   evt.target.reset();
+  resetValidation(newCardForm);
   closeModal(newCardPopup);
 }
 
 profileAddButton.addEventListener("click", () => {
+  resetValidation(newCardForm);
   openModal(newCardPopup);
 });
 
@@ -164,3 +192,6 @@ newCardPopupCloseButton.addEventListener("click", () => {
 });
 
 newCardForm.addEventListener("submit", handleCardFormSubmit);
+
+
+enableValidation();
