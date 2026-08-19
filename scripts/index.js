@@ -183,7 +183,8 @@ function handleCardFormSubmit(evt) {
 }
 
 profileAddButton.addEventListener("click", () => {
-  resetValidation(newCardForm);
+  newCardForm.reset(); 
+  resetValidation(newCardForm); 
   openModal(newCardPopup);
 });
 
